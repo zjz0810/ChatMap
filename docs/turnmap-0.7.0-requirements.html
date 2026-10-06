@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Requirements Draft</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --bg: #f7f9fc;
+        --paper: #ffffff;
+        --ink: #152033;
+        --muted: #637083;
+        --line: #d7deea;
+        --accent: #2563eb;
+        --warn: #b45309;
+        --good: #0f766e;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 15px/1.6 "Segoe UI", system-ui, sans-serif;
+      }
+      main {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 32px 20px 56px;
+      }
+      header,
+      section {
+        background: var(--paper);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        margin: 0 0 18px;
+        padding: 20px;
+      }
+      h1,
+      h2,
+      h3 {
+        line-height: 1.25;
+        margin: 0 0 10px;
+      }
+      h1 {
+        font-size: 28px;
+      }
+      h2 {
+        font-size: 21px;
+        margin-top: 8px;
+      }
+      h3 {
+        font-size: 17px;
+        margin-top: 18px;
+      }
+      p,
+      ul,
+      ol {
+        margin: 8px 0;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 12px 0;
+      }
+      th,
+      td {
+        border: 1px solid var(--line);
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+      }
+      th {
+        background: #eef4ff;
+      }
+      code {
+        background: #eef2f7;
+        border-radius: 4px;
+        padding: 1px 4px;
+      }
+      .editable {
+        border: 1px dashed #99a8bf;
+        border-radius: 6px;
+        min-height: 44px;
+        padding: 10px;
+        background: #fbfdff;
+      }
+      .editable:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        outline: none;
+      }
+      .callout {
+        border-left: 4px solid var(--accent);
+        background: #eff6ff;
+        padding: 10px 12px;
+      }
+      .risk {
+        border-left-color: var(--warn);
+        background: #fff7ed;
+      }
+      .ok {
+        border-left-color: var(--good);
+        background: #ecfdf5;
+      }
+      .todo {
+        color: var(--warn);
+        font-weight: 600;
+      }
+      .muted {
+        color: var(--muted);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="muted">Editable requirements draft. Fill the editable boxes, save the file, then ask Codex to grill again.</p>
+        <h1>TurnMap 0.7.0: Knowledge Organization And Node Editing</h1>
+        <div class="editable" contenteditable="true">
+          Version goal: improve node-level knowledge organization while preserving source jumping, saved graph recovery, user edits, manual layout, and existing topic/link workflows.
+        </div>
+      </header>
+
+      <section>
+        <h2>Non-Negotiable Boundaries</h2>
+        <ul>
+          <li>Do not overwrite user-authored titles, summaries, links, tags, colors, collapsed state, important state, source anchors, or custom notes.</li>
+          <li>Do not break ChatGPT jump stability, sourceAnchor/sourceAnchors recovery, multi-site adapters, themes, language packs, or API task logs.</li>
+          <li>New UI copy must ship in English and Chinese and remain compatible with generated custom language packs. This includes dialogs, confirmations, inline notices, option labels, placeholders, status-bar messages, task-log entries, disabled-state hints, and error text. Avoid browser-native prompt text for new workflows because it bypasses TurnMap's 0.5.x AI custom translation surface.</li>
+          <li>New file-related actions should use the existing Files menu. New node/link operations should use existing Node Actions or Link Actions surfaces unless there is a concrete reason not to.</li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Current Code Reality</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Area</th>
+              <th>Observed baseline</th>
+              <th>Implication for 0.7.0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Graph storage</td>
+              <td><code>graph-storage.ts</code> stores positions, user edges, overrides, custom nodes, hidden nodes, layout, root visibility, and hidden auto edges.</td>
+              <td>Node dimensions, node expansion payloads, and reversible topic groups need schemaVersion 3 additions and import/export treatment. Existing schemaVersion 2 graphs must keep loading through compatibility defaults.</td>
+            </tr>
+            <tr>
+              <td>Topic collapse</td>
+              <td><code>topic-collapse.ts</code> currently creates a custom topic note and hides original nodes.</td>
+              <td>This is not yet a fully reversible aggregate preserving original edges/layout as a named group. For 0.7.0, prioritize the new topic group model; confidently identifiable old topic notes may be migrated, while uncertain legacy notes can remain ordinary notes.</td>
+            </tr>
+            <tr>
+              <td>Node rendering</td>
+              <td><code>TurnNode.tsx</code> renders one title and one summary, with inline editing and context-menu jump on source-backed turn text.</td>
+              <td>Node expansion needs either an embedded mini-graph renderer inside the node or a different node type with equivalent edit/jump affordances.</td>
+            </tr>
+            <tr>
+              <td>Batch operations</td>
+              <td>Selected node actions already include merge, collapse topic, add tag, status, color, fold, important, and note conversion. Link actions focus on one selected link.</td>
+              <td>0.7.0 should clarify whether existing actions are polished, replaced, or extended, especially tag removal and multi-link edits.</td>
+            </tr>
+            <tr>
+              <td>Node size</td>
+              <td>No persistent width/height override is visible in storage. SVG export uses fixed node dimensions.</td>
+              <td>Resize must define how dimensions affect React Flow render, export render, layout refresh, and expanded mini-graphs.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Module Split</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Module</th>
+              <th>Responsibility</th>
+              <th>Out Of Boundary</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Persistence and schema</td>
+              <td>Save/load/import/export node dimensions, expansion data, topic groups, batch tag/link edits.</td>
+              <td>Provider prompts, UI layout polish, site adapter changes unless needed for source anchors.</td>
+            </tr>
+            <tr>
+              <td>Resizable nodes</td>
+              <td>User resizing, dimension precedence, auto-size behavior for expanded nodes, SVG/export compatibility.</td>
+              <td>General layout algorithm rewrite.</td>
+            </tr>
+            <tr>
+              <td>Node expansion</td>
+              <td>AI/rule decomposition data model, embedded mini-map render, edit support, restore-to-normal, task logging.</td>
+              <td>Cross-conversation knowledge graphs or full nested React Flow editor unless explicitly accepted.</td>
+            </tr>
+            <tr>
+              <td>Topic grouping</td>
+              <td>Group selected nodes into reversible topic nodes, restore original nodes/edges/layout, preserve existing single-node fold semantics.</td>
+              <td>Replacing existing local Topic Analysis candidate-link feature.</td>
+            </tr>
+            <tr>
+              <td>Batch actions</td>
+              <td>Bulk tags and bulk link appearance/type/importance/status feedback via existing action panels.</td>
+              <td>New global command palette or standalone floating manager.</td>
+            </tr>
+            <tr>
+              <td>Docs and tests</td>
+              <td>README, zh README, changelog, guide, unit tests, typecheck/build/package verification as requested.</td>
+              <td>Release publication unless explicitly requested.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Decision Log To Fill</h2>
+        <h3>1. Node Expansion MVP</h3>
+        <div class="editable" contenteditable="true">
+          Decision: 0.7.0 will use a structured mini-map / outline inside the node, not a full nested React Flow editor. The MVP should store durable expansion data and support readable rendering plus constrained edits such as title/summary edits, color, fold, importance, and deletion. Full internal manual linking and complete nested graph parity are deferred to a later 0.7.x or 0.8+ iteration after the data model and interaction model prove stable.
+        </div>
+        <h3>2. Node Expansion Storage Boundary</h3>
+        <div class="editable" contenteditable="true">
+          Decision: expanding a node must not delete or overwrite the node's original AI-answer summary. Store the decomposed result in a separate node-owned structured field such as expandedContent / answerMap. Normal display mode keeps reading the original title and summary; expanded display mode reads the structured answer map. Restoring normal display only switches the display mode back and keeps the expansion data unless the user explicitly deletes the expansion result.
+          Decision: node expansion is API-only for 0.7.0. Do not implement local rule-based decomposition fallback in this release. If no API key/provider is configured, the expand action should be disabled or guide the user to AI settings through localized UI copy. If the AI request fails, returns empty output, or returns a structure that does not pass validation, do not write any expansion data; keep the node exactly as it was, and report the failure in the status bar and task log.
+          AI expansion output should create compact mini nodes with title only; do not store or render mini-node summaries in 0.7.0. The minimum mini-node count depends on the source answer's actual structure, but a useful expansion should normally contain at least two meaningful mini nodes unless the source answer is genuinely too short. The prompt should prefer 6-18 mini nodes and enforce a hard maximum of 24. Results beyond the hard maximum should be rejected or reduced to higher-level structure before write-in. Mini-map links should favor section, subpoint, and summary relationships within the same local structure, while lowering the weight of cross-branch links so the embedded view stays clean and avoids excessive line crossings.
+          Mini-map editing scope for 0.7.0 is deliberately constrained. Required: edit mini-node title, color mini nodes, mark mini nodes important, delete mini nodes, delete related internal links when a mini node is removed, and save/restore these edits. Deferred: mini-node summary fields, mini-node subtree fold/unfold, manual mini-node creation, manual internal linking, internal link type/color/importance editing, and freeform mini-node dragging. The outer TurnMap node still keeps its existing fold/unfold behavior.
+          If deleting mini nodes leaves fewer than two mini nodes, keep the expanded state but show localized guidance that the expansion is no longer structurally useful and the user can restore the normal answer display or run AI expansion again. Do not automatically switch display modes as a hidden side effect of deletion.
+          Node expansion controls should live in the existing Node Actions panel as single-node actions. For one selected ordinary AI turn node, show Expand Answer when no expansion exists. For an expanded node, show localized controls for Show Original, Show Expanded, Delete Expansion, and Re-expand as appropriate. Do not support batch expansion in 0.7.0, because it would create many API tasks and many write opportunities at once.
+          Show Original and Delete Expansion must be separate actions. Show Original only switches display mode back to the normal AI answer while preserving expansion data. Show Expanded switches back to the mini-map view. Delete Expansion requires confirmation and removes expansion data only after confirmation. Re-expand also requires confirmation because it may overwrite the existing AI expansion and any user edits made inside the mini-map.
+          Export boundary: TurnMap JSON must fully export expansion data and the current display mode so it can restore the complete editable map. PNG export must render the currently visible expanded mini-map state. At least one editable mind-map export format should preserve the expansion structure as much as the format allows; candidate formats should be evaluated from the existing export set, likely Obsidian Canvas first because it is already editable and graph-oriented. Documentation must clearly tell users to prefer TurnMap JSON when they want complete save/restore fidelity for expanded nodes and other TurnMap-specific editing state.
+          Obsidian Canvas is the required editable graph export target for expanded nodes in 0.7.0. When exporting an expanded TurnMap node, keep the outer node as a parent-level Canvas node preserving the TurnMap node title/original answer semantics, and export mini nodes as nearby editable Canvas nodes with internal links representing the expansion structure. Do not flatten the mini-map into a static image inside Canvas.
+          Obsidian Canvas import is not required to round-trip expanded nodes back into TurnMap expansion data in 0.7.0. Canvas is an editable external export/work format, not the complete TurnMap persistence format. Full fidelity save/restore is guaranteed only through TurnMap JSON.
+          AI expansion input should prefer the original assistant answer/source text for that turn, not the user-edited title or summary. If the original answer text is unavailable, fall back to the current summary and record that fallback in the task log. Expansion writes must still preserve the user-edited outer node title and summary.
+        </div>
+        <h3>3. Resize Precedence</h3>
+        <div class="editable" contenteditable="true">
+          Decision: size/layout precedence is Rebuild &gt; user manual resize &gt; refresh / deep scan recovery &gt; automatic layout. Rebuild may intentionally regenerate dimensions and layout. Once the user manually resizes a node, ordinary refresh, deep scan, conversation switching, and automatic layout must preserve that user size. Automatic layout may still choose initial positions and default sizes for nodes that have no user size. Expanded mini-map auto-sizing may enlarge a node only when no user manual size exists.
+          If refresh or deep scan remaps node IDs, stored dimensions should migrate with the original node when the remap confidently identifies the same source turn. If identity is uncertain, use default dimensions rather than applying the wrong size to another answer.
+          Show Original / Show Expanded may switch between normal default size and expanded auto-size only when the node has no user manual size. Once a user manually resizes a node, display-mode changes must preserve the user size.
+          Resize interaction should expose persistent drag zones on the left edge, right edge, bottom edge, lower-left corner, and lower-right corner. Do not expose top-edge or upper-corner resize zones in 0.7.0, so the node header and drag handle area remain less conflicted with node movement and selection. User-facing documentation must explain where the resize drag zones are located.
+          Resized nodes must have minimum width and height limits so users cannot save a node state where the title, tags, core controls, or expanded mini-map become effectively unusable.
+          Resized nodes should also have maximum width and height protection, tuned for Side Panel and Full Page use, so a saved node cannot permanently cover most of the canvas or become hard to recover. The maximum should still leave enough room for expanded mini-map readability.
+        </div>
+        <h3>4. Topic Collapse Reversibility</h3>
+        <div class="editable" contenteditable="true">
+          Decision: topic collapse may group non-contiguous selected nodes. A topic group is semantic, not necessarily a continuous turn range. The implementation must persist the grouped node IDs, original positions, and enough edge/layout metadata to restore the original nodes, original connections, and layout when expanded.
+          While collapsed, external links that touched grouped nodes should be represented by system-generated proxy links between the external node and the topic node so the map remains connected. Proxy links must be marked as generated collapse-view edges and must not become permanent user links. Expanding the topic removes proxy links and restores the original links.
+          The topic node is an editable long-lived group record rather than a disposable placeholder. User edits to its title, summary, tags, color, importance, and display state should persist as topic-group metadata. Expanding the topic may hide the topic node from the current view, but it should not delete the group record unless the user explicitly deletes the topic group.
+          0.7.0 will not add hidden group-management UI for collapsing back to an expanded topic. After a topic is expanded, the group record remains in data. If the user later selects the same member set and collapses it again, reuse the existing topic metadata instead of creating a fresh duplicate group.
+          Nested topic collapse is out of scope and should be blocked in 0.7.0. A topic node cannot be selected with other nodes to create a larger topic group, and members that already belong to an active collapsed topic should not be collapsed into another topic.
+        </div>
+        <h3>5. Batch Scope</h3>
+        <div class="editable" contenteditable="true">
+          Decision: node tag management should be integrated into the existing Node Actions panel. For selected nodes, the panel should support localized add-tag and remove-tag controls instead of relying on browser prompt dialogs. It should show the selected nodes' tag union for removal; removing a tag removes it from every selected node that has it and skips nodes that do not. All labels, placeholders, buttons, status messages, and errors must use English and Chinese i18n keys so built-in language switching and AI-generated custom language packs can cover them.
+          Tag normalization should be light: trim surrounding whitespace, enforce a maximum length of 32 characters, and de-duplicate tags within each node. Preserve user casing and non-English text exactly after trimming; do not force lowercase or translate user-authored tag content.
+          Batch link operations should be triggered by selecting multiple links, not by selecting multiple nodes. When multiple links are selected, Link Actions enters a batch mode for type, color, and importance edits. Multi-selecting nodes should only affect node operations unless the user explicitly selects links.
+          Link color semantics should remain type-driven for 0.7.0. Batch relationship-type changes apply that type's default color. Batch importance changes affect emphasis only. Do not introduce independent custom link-color overrides unless the existing link model already has a clear field for it.
+          Logging boundary: AI or potentially slow tasks such as node expansion, re-expansion, provider failures, and structure validation failures must report both status-bar messages and task-log entries. Fast local edits such as batch tags, batch link changes, resize save, and topic collapse/expand should use localized status-bar feedback without filling the API task log.
+        </div>
+      </section>
+
+      <section>
+        <h2>Open Risks</h2>
+        <div class="callout risk">
+          <strong>Largest risk:</strong> "small mind map inside a node supports existing edit capabilities" can balloon into a second graph editor inside every node. That may conflict with React Flow drag, resize, selection, link creation, and source-jump gestures.
+        </div>
+        <div class="callout risk">
+          <strong>Persistence risk:</strong> topic collapse and node expansion both want to hide or replace visible content while preserving original source-backed state. Without a clear schema, refresh/rebuild/import may silently lose user work.
+        </div>
+        <div class="callout ok">
+          <strong>Conservative path:</strong> start with durable dimensions, then store expansion data as node-owned structured content, then render it as a constrained mini-map before attempting full nested graph editing parity.
+        </div>
+      </section>
+
+      <section>
+        <h2>Implementation Order</h2>
+        <ol>
+          <li>Extend persistence schema and test fixtures first so dimensions, expansion data, topic groups, and batch edits share one save/load path.</li>
+          <li>Implement node resizing, dimension precedence, remap migration, min/max constraints, and documentation for resize drag zones.</li>
+          <li>Implement API-only node expansion data model, AI request, validation, atomic write behavior, and Show Original / Show Expanded display switching.</li>
+          <li>Implement compact mini-map rendering, constrained mini-node editing, and TurnMap JSON / PNG / Obsidian Canvas export support.</li>
+          <li>Replace prompt-based tag operations with localized Node Actions tag add/remove controls.</li>
+          <li>Implement true multi-link selection batch edits for relationship type and importance with type-driven colors.</li>
+          <li>Implement reversible topic group records, proxy links while collapsed, metadata reuse for repeated same-member collapse, and no nested topic collapse.</li>
+          <li>Finish README, Chinese README, changelog, user guide, i18n completeness tests, unit tests, typecheck, build, and package a local testable unpacked release after verification passes.</li>
+        </ol>
+      </section>
+    </main>
+  </body>
+</html>

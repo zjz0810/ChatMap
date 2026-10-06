@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-13",
+  "sites": [
+    { "siteId": "chatgpt", "qaStatus": "verified", "report": "chatgpt-reference-2026-07-11.md" },
+    { "siteId": "deepseek", "qaStatus": "blocked-auth", "report": "deepseek-2026-07-12.md" },
+    { "siteId": "kimi", "qaStatus": "blocked-auth", "report": "kimi-2026-07-12.md" },
+    { "siteId": "doubao", "qaStatus": "blocked-auth", "report": "doubao-2026-07-12.md" },
+    { "siteId": "qwen", "qaStatus": "smoke-verified", "report": "qwen-2026-07-12.md", "implementation": "native-index-evidence-gated" },
+    { "siteId": "gemini", "qaStatus": "smoke-verified", "report": "gemini-2026-07-12.md" },
+    { "siteId": "google-ai-studio", "qaStatus": "blocked-auth", "report": "google-ai-studio-2026-07-12.md" },
+    { "siteId": "claude", "qaStatus": "blocked-access", "report": "claude-2026-07-12.md" },
+    { "siteId": "perplexity", "qaStatus": "blocked-access", "report": "perplexity-2026-07-12.md" },
+    { "siteId": "grok", "qaStatus": "blocked-auth", "report": "grok-2026-07-12.md", "implementation": "native-index-evidence-gated" },
+    { "siteId": "glm", "qaStatus": "smoke-verified", "report": "glm-2026-07-12.md", "implementation": "variant-split-native-index-evidence-gated" },
+    { "siteId": "mistral", "qaStatus": "blocked-access", "report": "mistral-2026-07-12.md" },
+    { "siteId": "arena", "qaStatus": "blocked-access", "report": "arena-2026-07-12.md" }
+  ]
+}

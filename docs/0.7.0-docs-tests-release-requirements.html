@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Docs Tests Release Requirements</title>
+    <style>
+      body { margin: 0; background: #f7f9fc; color: #152033; font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+      main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+      section, header { background: #fff; border: 1px solid #d7deea; border-radius: 8px; margin-bottom: 18px; padding: 20px; }
+      h1, h2 { margin: 0 0 10px; line-height: 1.25; }
+      code { background: #eef2f7; border-radius: 4px; padding: 1px 4px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Docs, Tests, And Release Module PRD</h1>
+        <p>Owner scope: documentation, localization completeness, verification, and optional packaging for 0.7.0.</p>
+      </header>
+      <section>
+        <h2>Documentation</h2>
+        <ul>
+          <li>Update <code>README.md</code>, <code>README.zh-CN.md</code>, <code>CHANGELOG.md</code>, and <code>docs/user-guide.md</code>.</li>
+          <li>Emphasize that TurnMap JSON is the preferred format for complete save/restore fidelity.</li>
+          <li>Document resize drag zones: left edge, right edge, bottom edge, lower-left corner, lower-right corner.</li>
+          <li>Document API-only node expansion, no local fallback, Show Original vs Delete Expansion, and Re-expand overwrite confirmation.</li>
+          <li>List API-only node expansion as a known 0.7.0 limitation so users understand that a configured AI provider/API key is required.</li>
+          <li>Document Obsidian Canvas as editable external export, not full round-trip persistence.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Testing</h2>
+        <ul>
+          <li>Unit coverage for node expansion save/restore, mini-node edits, dimensions, topic group save/restore, batch tags, batch link edits, export behavior, and i18n completeness.</li>
+          <li>Mock AI provider behavior; tests must not depend on live API keys.</li>
+          <li>After each implemented subfeature, run <code>npm.cmd run test:unit</code> and <code>npm.cmd run typecheck</code>.</li>
+          <li>At the end, run <code>npm.cmd run build</code> and <code>npm.cmd run package</code>.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Localization</h2>
+        <ul>
+          <li>Every new dialog, confirmation, inline notice, option label, placeholder, status-bar message, task-log entry, disabled hint, and error must have English and Chinese keys.</li>
+          <li>Custom AI language packs must inherit the new keys through the existing 0.5.x language-pack mechanism.</li>
+          <li>Avoid browser-native prompt text for new flows.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Release Boundary</h2>
+        <ul>
+          <li>Do not commit or push unless explicitly requested.</li>
+          <li>Do not publish a release unless explicitly requested.</li>
+          <li>After Codex verification passes, produce a local testable unpacked package under <code>release/</code>, plus the corresponding zip if the packaging script creates it.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

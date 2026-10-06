@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Persistence Schema Requirements</title>
+    <style>
+      body { margin: 0; background: #f7f9fc; color: #152033; font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+      main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+      section, header { background: #fff; border: 1px solid #d7deea; border-radius: 8px; margin-bottom: 18px; padding: 20px; }
+      h1, h2, h3 { line-height: 1.25; margin: 0 0 10px; }
+      h1 { font-size: 27px; } h2 { font-size: 21px; } h3 { font-size: 17px; margin-top: 18px; }
+      table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+      th, td { border: 1px solid #d7deea; padding: 8px 10px; vertical-align: top; text-align: left; }
+      th { background: #eef4ff; }
+      code { background: #eef2f7; border-radius: 4px; padding: 1px 4px; }
+      .editable { border: 1px dashed #99a8bf; border-radius: 6px; min-height: 44px; padding: 10px; background: #fbfdff; }
+      .risk { border-left: 4px solid #b45309; background: #fff7ed; padding: 10px 12px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Persistence And Schema Module PRD</h1>
+        <p>Owner scope: shared storage/import/export schema foundations for 0.7.0 features.</p>
+      </header>
+      <section>
+        <h2>Responsibilities</h2>
+        <ul>
+          <li>Extend saved graph schema for node dimensions, manual-size flags, expansion data/display mode, topic group records, and any generated proxy-edge metadata.</li>
+          <li>Preserve existing positions, user edges, node overrides, custom nodes, hidden nodes, source anchors, hidden root, hidden auto edges, and layout mode.</li>
+          <li>Support confident node-id remap migration for dimensions and expansion state when refresh/deep scan identifies the same original node.</li>
+          <li>Ensure TurnMap JSON exports/imports full 0.7.0 state with complete save/restore fidelity.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Data Objects</h2>
+        <table>
+          <thead><tr><th>Object</th><th>Required fields</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>Node dimension override</td><td><code>width</code>, <code>height</code>, <code>manual</code></td><td>Manual dimensions survive refresh/deep scan/layout. Rebuild may clear or regenerate them.</td></tr>
+            <tr><td>Expansion data</td><td><code>displayMode</code>, mini nodes, mini links, created/updated metadata</td><td>Stored separately from outer node title/summary. Failed AI expansion writes nothing.</td></tr>
+            <tr><td>Mini node</td><td><code>id</code>, <code>title</code>, optional color/important</td><td>No mini summaries in 0.7.0. Deleted mini nodes are removed from related internal links.</td></tr>
+            <tr><td>Topic group</td><td>group id, member ids, metadata, collapsed state, restoration metadata</td><td>Long-lived group record. No nested topic groups.</td></tr>
+            <tr><td>Proxy edge metadata</td><td>generated kind, source group, original edge refs</td><td>Used only while a topic is collapsed. Must not become a permanent user edge.</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Open Questions</h2>
+        <h3>Schema Version</h3>
+        <div class="editable" contenteditable="true">Decision: bump saved graph schemaVersion from 2 to 3 for 0.7.0. Version 3 owns node dimensions, manual-size flags, expansion data/display mode, topic group records, and generated proxy-edge metadata. Version 2 data must continue to load through compatibility defaults.</div>
+        <h3>Import Compatibility</h3>
+        <div class="editable" contenteditable="true">Decision: prefer forward-looking 0.7.0 behavior over preserving every preview-era quirk. Older graphs without dimensions, expansion data, or topicGroups should load with compatibility defaults. Legacy custom-topic notes that can be confidently identified as old Collapse Topic output should be migrated into schemaVersion 3 topic group records when enough hidden-node/source metadata exists. If confidence is low, keep the legacy note as a normal custom note rather than risking a wrong group. High-confidence migration requires: id matching the old custom-topic-* pattern, tags containing topic, summary matching the old "Collapsed topic from N turns." structure, and hiddenNodeIds containing the original hidden nodes. sourceAnchors matching member nodes are useful supporting evidence but not a hard requirement.</div>
+        <h3>Topic Group Snapshot Scope</h3>
+        <div class="editable" contenteditable="true">Decision: topic groups store a minimal restoration snapshot, not a full copy of node content. Store member ids, member positions before collapse, member hidden state before collapse, related user-edge ids/payload needed for restoration, and editable topic metadata. Do not duplicate node title, summary, source text, or sourceAnchors inside the group record; those remain owned by nodeOverrides/customNodes/turn data to avoid two sources of truth.</div>
+      </section>
+      <section>
+        <h2>Acceptance</h2>
+        <ul>
+          <li>Unit tests cover save/load/JSON import/export for dimensions, expansion data, mini edits, topic groups, proxy edge exclusion, and sourceAnchors preservation.</li>
+          <li>Older saved graphs still load without data loss.</li>
+          <li>Full fidelity recovery is documented as TurnMap JSON only.</li>
+        </ul>
+        <p class="risk">Risk: adding several 0.7.0 fields independently can create partial persistence bugs. This module should land before feature UI work.</p>
+      </section>
+    </main>
+  </body>
+</html>

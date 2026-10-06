@@ -1,0 +1,26 @@
+node_modules/
+dist/
+release/
+backups/
+.tools/
+.env
+.env.*
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Local planning, handoff, and review drafts
+task_plan.md
+progress.md
+findings.md
+TurnMap_*_Plan.md
+docs/*Future Development Plan*.html
+docs/future-development-plan*.html
+docs/github-release-plan.html
+docs/turnmap-*-handoff.md
+docs/superpowers/
+docs/dev/*sprint*.md
+docs/dev/*task-breakdown*.md
+docs/dev/*technical-plan*.md
+kimi_*.png

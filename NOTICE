@@ -1,0 +1,8 @@
+ChatMap 1.0.0 is an independently maintained derivative of Zhaimiaoyizhi/TurnMap v0.9.2:
+https://github.com/Zhaimiaoyizhi/TurnMap/tree/v0.9.2
+
+The upstream MIT license and original copyright notice are retained in LICENSE.
+ChatMap is not an official TurnMap release and does not claim upstream work as
+original. ChatMap-specific modifications include ChatGPT-focused long-history
+ordering, identity-based refresh and source navigation, ChatMap branding, and
+the interface changes documented in CHANGELOG.md.

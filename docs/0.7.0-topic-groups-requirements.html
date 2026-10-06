@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Topic Groups Requirements</title>
+    <style>
+      body { margin: 0; background: #f7f9fc; color: #152033; font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+      main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+      section, header { background: #fff; border: 1px solid #d7deea; border-radius: 8px; margin-bottom: 18px; padding: 20px; }
+      h1, h2 { margin: 0 0 10px; line-height: 1.25; }
+      .risk { border-left: 4px solid #b45309; background: #fff7ed; padding: 10px 12px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Topic Groups Module PRD</h1>
+        <p>Owner scope: reversible one-level topic grouping with editable topic metadata and generated proxy links.</p>
+      </header>
+      <section>
+        <h2>Requirements</h2>
+        <ul>
+          <li>Allow non-contiguous selected nodes to collapse into a semantic topic node.</li>
+          <li>Persist a long-lived topic group record with member IDs, original positions, restoration metadata, and topic node metadata.</li>
+          <li>Store only a minimal restoration snapshot: member positions, member hidden state, and related user-edge restoration data. Do not duplicate member node title, summary, source text, or sourceAnchors.</li>
+          <li>Topic node metadata includes title, summary, tags, color, importance, and display state.</li>
+          <li>While collapsed, represent external links touching grouped nodes with generated proxy links to/from the topic node.</li>
+          <li>Proxy links are generated view edges and must not become permanent user links.</li>
+          <li>Edge handling is based on group boundary, not user-vs-auto source. Edges with both endpoints inside the topic group are hidden while collapsed and restored on expansion. Edges crossing the group boundary become generated proxy links while collapsed and restore to their original endpoints on expansion. Edges entirely outside the group remain unchanged.</li>
+          <li>Expanding restores original nodes, original links, and layout.</li>
+          <li>After expansion, hide the topic node from the visible canvas and show restored member nodes plus original links. Keep topic metadata in the group record.</li>
+          <li>If the same member set is collapsed again later, reuse existing topic metadata instead of creating a duplicate group.</li>
+          <li>If member nodes are deleted after expansion, mark the old group record stale and do not auto-reuse it. A later collapse of the remaining nodes should create a new group rather than trying to repair the old member set.</li>
+          <li>Block nested topic collapse in 0.7.0.</li>
+          <li>Migrate old custom-topic notes only when the legacy id, topic tag, generated summary structure, and hiddenNodeIds provide high-confidence evidence.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Out Of Scope</h2>
+        <ul>
+          <li>Hidden group-management UI for one-click collapse back to an expanded topic.</li>
+          <li>Topic-in-topic nesting.</li>
+          <li>Replacing existing Analyze Topics candidate-link flow.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Acceptance</h2>
+        <ul>
+          <li>Tests cover non-contiguous groups, restore original nodes/edges/layout, editable metadata persistence, proxy link generation/removal, metadata reuse, nested-collapse blocking, and JSON save/restore.</li>
+          <li>Existing single-node fold behavior remains separate from topic grouping.</li>
+        </ul>
+        <p class="risk">Risk: topic collapse already exists as hide selected nodes plus custom note. Because preview-era saved data is not the priority, 0.7.0 should migrate confidently identifiable old topic notes into proper topic group records when possible, and leave uncertain cases as ordinary notes.</p>
+      </section>
+    </main>
+  </body>
+</html>

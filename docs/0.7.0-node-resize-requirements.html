@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Node Resize Requirements</title>
+    <style>
+      body { margin: 0; background: #f7f9fc; color: #152033; font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+      main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+      section, header { background: #fff; border: 1px solid #d7deea; border-radius: 8px; margin-bottom: 18px; padding: 20px; }
+      h1, h2, h3 { margin: 0 0 10px; line-height: 1.25; }
+      code { background: #eef2f7; border-radius: 4px; padding: 1px 4px; }
+      .editable { border: 1px dashed #99a8bf; border-radius: 6px; min-height: 44px; padding: 10px; background: #fbfdff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Node Resize Module PRD</h1>
+        <p>Owner scope: user-controlled node dimensions, persistence, and interaction safety.</p>
+      </header>
+      <section>
+        <h2>Requirements</h2>
+        <ul>
+          <li>Expose persistent resize drag zones on the left edge, right edge, bottom edge, lower-left corner, and lower-right corner.</li>
+          <li>Do not expose top-edge or upper-corner resize zones in 0.7.0.</li>
+          <li>Precedence: Rebuild &gt; user manual resize &gt; refresh/deep scan recovery &gt; automatic layout.</li>
+          <li>Manual dimensions must survive refresh, deep scan, conversation switch, browser restart, and automatic layout changes.</li>
+          <li>Show Original / Show Expanded may auto-switch normal/expanded size only before the user manually resizes that node.</li>
+          <li>Enforce minimum and maximum dimensions so saved layouts remain usable in Side Panel and Full Page views.</li>
+          <li>Resize should update React graph state and rely on the existing debounced graph save pipeline rather than writing immediately on every drag movement.</li>
+          <li>Dragging completion may show a localized status-bar message such as node size saved.</li>
+          <li>Resize drag zones are persistent but visually low-noise by default. Their affordance should become clearer on hover, keyboard focus, or node selection.</li>
+          <li>User node dimensions are shared across layout modes. Do not maintain separate manual sizes for Single-side, Radial, Matrix, and Two-sided layouts in 0.7.0.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Out Of Scope</h2>
+        <ul>
+          <li>Freeform resizing from the top edge or top corners.</li>
+          <li>Global layout algorithm rewrite.</li>
+          <li>Per-layout independent node sizes unless explicitly needed later.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Documentation</h2>
+        <div class="editable" contenteditable="true">User guide must explain that nodes can be resized from the left edge, right edge, bottom edge, lower-left corner, and lower-right corner.</div>
+      </section>
+      <section>
+        <h2>Acceptance</h2>
+        <ul>
+          <li>Tests cover dimension save/restore, refresh/deep scan remap migration, min/max clamping, and Rebuild reset behavior.</li>
+          <li>Resize interactions do not break node dragging, selection, multi-select, text edit, right-click source jump, or expansion controls.</li>
+          <li>PNG/SVG/Canvas export reads current visible dimensions where relevant.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

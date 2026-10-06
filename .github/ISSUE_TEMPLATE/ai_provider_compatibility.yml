@@ -1,0 +1,35 @@
+name: AI provider compatibility
+description: Report an issue with OpenAI, DeepSeek, or a custom compatible provider.
+title: "[AI Provider]: "
+labels: ["ai", "compatibility"]
+body:
+  - type: input
+    id: provider
+    attributes:
+      label: Provider
+      placeholder: OpenAI, DeepSeek, custom provider name
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Model
+      placeholder: gpt-4.1-mini, deepseek-chat, etc.
+  - type: dropdown
+    id: feature
+    attributes:
+      label: Feature
+      options:
+        - Test Connection
+        - Summarize
+        - Suggest Links
+        - Auto summarize
+  - type: textarea
+    id: error
+    attributes:
+      label: Error message
+      description: Remove API keys and private conversation text before posting.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional notes

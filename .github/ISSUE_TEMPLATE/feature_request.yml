@@ -1,0 +1,34 @@
+name: Feature request
+description: Suggest an improvement for TurnMap.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or workflow
+      description: What are you trying to do?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the feature or behavior you want.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Conversation extraction
+        - Node jumping
+        - Graph editing
+        - Layout
+        - AI
+        - Export/import
+        - Settings
+        - Floating launcher
+        - Updates
+        - Other

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Batch Actions Requirements</title>
+    <style>
+      body { margin: 0; background: #f7f9fc; color: #152033; font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+      main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+      section, header { background: #fff; border: 1px solid #d7deea; border-radius: 8px; margin-bottom: 18px; padding: 20px; }
+      h1, h2 { margin: 0 0 10px; line-height: 1.25; }
+      code { background: #eef2f7; border-radius: 4px; padding: 1px 4px; }
+      .editable { border: 1px dashed #99a8bf; border-radius: 6px; min-height: 44px; padding: 10px; background: #fbfdff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Batch Actions Module PRD</h1>
+        <p>Owner scope: localized multi-node tag management and true multi-link batch editing.</p>
+      </header>
+      <section>
+        <h2>Node Tags</h2>
+        <ul>
+          <li>Integrate add/remove tag controls into the existing Node Actions panel.</li>
+          <li>No new browser-native <code>prompt</code> dialogs for tag workflows.</li>
+          <li>Show the selected nodes' tag union; removing a tag removes it from every selected node that has it.</li>
+          <li>Normalize tags lightly: trim, max 32 characters, de-duplicate per node, preserve case and non-English text.</li>
+          <li>Tags persist and continue feeding topic analysis/link suggestions.</li>
+          <li>Removing a tag from selected nodes does not require confirmation. Use localized status-bar feedback such as how many nodes were updated.</li>
+          <li>A batch tag add/remove operation should behave as one undo/history step, not one step per changed node.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Link Batch Mode</h2>
+        <ul>
+          <li>Batch link operations are triggered by selecting multiple links, not by selecting multiple nodes.</li>
+          <li>Link Actions supports batch relationship type and importance edits.</li>
+          <li>Relationship type drives color. Do not add independent custom link color overrides in 0.7.0 unless already supported by the existing model.</li>
+          <li>Multi-selecting nodes must not silently modify links.</li>
+          <li>A batch link edit should behave as one undo/history step, not one step per changed link.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Localization</h2>
+        <div class="editable" contenteditable="true">Every label, placeholder, disabled hint, status message, and error in this module must be added to English and Chinese i18n maps and covered by i18n completeness tests so AI custom translation packs inherit the keys.</div>
+      </section>
+      <section>
+        <h2>Acceptance</h2>
+        <ul>
+          <li>Unit tests cover tag add/remove persistence, normalization, tag union behavior, i18n key completeness, link batch type/importance changes, and type-driven colors.</li>
+          <li>Fast local edits use status-bar feedback, not API task-log spam.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>

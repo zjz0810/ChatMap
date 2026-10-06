@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="ChatMap">
+  <rect width="512" height="512" fill="#ffffff"/>
+  <g transform="matrix(1.8 0 0 1.8 -158 -162)" fill="#111827" stroke="#111827" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M150 222h76v-53h75m-75 53v74h78m-78-74h78" fill="none" stroke-width="18"/>
+    <circle cx="151" cy="222" r="20" stroke="none"/>
+    <circle cx="226" cy="222" r="22" stroke="none"/>
+    <circle cx="301" cy="169" r="22" stroke="none"/>
+    <circle cx="307" cy="222" r="22" stroke="none"/>
+    <circle cx="304" cy="296" r="22" stroke="none"/>
+  </g>
+</svg>

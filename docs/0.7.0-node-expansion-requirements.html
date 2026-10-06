@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TurnMap 0.7.0 Node Expansion Requirements</title>
+    <style>
+      body { margin: 0; background: #f7f9fc; color: #152033; font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+      main { max-width: 1040px; margin: 0 auto; padding: 32px 20px 56px; }
+      section, header { background: #fff; border: 1px solid #d7deea; border-radius: 8px; margin-bottom: 18px; padding: 20px; }
+      h1, h2, h3 { margin: 0 0 10px; line-height: 1.25; }
+      table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+      th, td { border: 1px solid #d7deea; padding: 8px 10px; vertical-align: top; text-align: left; }
+      th { background: #eef4ff; }
+      code { background: #eef2f7; border-radius: 4px; padding: 1px 4px; }
+      .editable { border: 1px dashed #99a8bf; border-radius: 6px; min-height: 44px; padding: 10px; background: #fbfdff; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Node Expansion Module PRD</h1>
+        <p>Owner scope: API-only expansion of one AI answer into a compact, editable mini-map inside the original node.</p>
+      </header>
+      <section>
+        <h2>Core Decisions</h2>
+        <ul>
+          <li>API-only in 0.7.0. No local rule-based fallback.</li>
+          <li>AI expansion uses original assistant answer/source text when available; summary fallback is allowed and logged.</li>
+          <li>The user question may be sent as context to improve decomposition quality, but the output mini-map must decompose only the assistant answer and must not turn the user question into mini nodes.</li>
+          <li>Mini-node titles should follow the original answer language. Node expansion is content structuring, not translation. UI labels and messages still follow TurnMap interface language settings.</li>
+          <li>Expansion data is stored separately from the outer node title/summary.</li>
+          <li>AI output writes only after request success and structure validation. Failures leave the node unchanged.</li>
+          <li>Mini nodes have title only. No mini summary fields in 0.7.0.</li>
+          <li>Preferred mini-node count: 6-18. Hard maximum: 24.</li>
+          <li>Documentation must disclose that node expansion sends the selected answer, and possibly the user question as context, to the configured AI provider. Do not show a confirmation before every expansion; use disabled/configuration guidance when no provider is configured.</li>
+          <li>Documentation must present API-only expansion as an intentional 0.7.0 limitation, not as a broken disabled feature.</li>
+          <li>Cancellation is out of scope for single-node expansion in 0.7.0. While expansion is running, disable duplicate expand/re-expand actions, show progress, and rely on atomic no-write behavior for failures.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Node Actions</h2>
+        <table>
+          <thead><tr><th>State</th><th>Actions</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>No expansion</td><td>Expand Answer</td><td>Disabled or guided to AI settings when no provider/API key is configured.</td></tr>
+            <tr><td>Expanded data exists</td><td>Show Original, Show Expanded, Delete Expansion, Re-expand</td><td>Delete and Re-expand require confirmation.</td></tr>
+            <tr><td>Multiple nodes selected</td><td>No batch expansion</td><td>Avoid many simultaneous API writes.</td></tr>
+          </tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Mini-Map Editing</h2>
+        <ul>
+          <li>Required: edit mini-node title, color mini nodes, mark mini nodes important, delete mini nodes, remove related internal links, save/restore edits.</li>
+          <li>Deferred: mini summaries, subtree fold/unfold, manual mini-node creation, manual internal linking, internal link edits, freeform mini-node dragging.</li>
+          <li>If fewer than two mini nodes remain after deletion, keep expanded state and show localized guidance.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Export</h2>
+        <ul>
+          <li>TurnMap JSON must preserve full expansion data and current display mode.</li>
+          <li>PNG must render currently visible expanded mini-map state.</li>
+          <li>Obsidian Canvas must export outer node plus editable nearby mini nodes and internal links.</li>
+          <li>Canvas import does not need to round-trip expansion data in 0.7.0.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Acceptance</h2>
+        <ul>
+          <li>Mocked AI tests cover success, no API key, provider failure, invalid structure, hard cap, atomic no-write failure, and summary fallback logging.</li>
+          <li>Save/restore tests cover display mode, mini-node edits, deleted mini nodes, and outer title/summary preservation.</li>
+          <li>All UI/status/task-log copy is localized and available to AI custom translation packs.</li>
+        </ul>
+      </section>
+    </main>
+  </body>
+</html>
