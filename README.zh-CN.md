@@ -12,6 +12,10 @@ ChatMap 是一个面向 Chrome 与 Edge 的 Chromium Manifest V3 浏览器扩展
 
 > 状态：ChatMap 1.0.0 GitHub 预览版。尚未发布到 Edge Add-ons 或 Chrome Web Store。可以从源码手动安装，或从 GitHub Release 下载扩展包。
 
+## 演示截图
+
+![ChatGPT 对话旁显示 ChatMap 思维导图](ChatMap.jpg)
+
 ## 适用场景
 
 ChatMap 适合：

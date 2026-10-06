@@ -12,6 +12,10 @@ ChatMap is a Chromium Manifest V3 browser extension for Chrome and Edge. Its pri
 
 > Status: ChatMap 1.0.0 GitHub preview. It is not yet published to Edge Add-ons or the Chrome Web Store. Install it manually from source or a GitHub Release package.
 
+## Preview
+
+![ChatMap alongside a ChatGPT conversation](ChatMap.jpg)
+
 ChatMap keeps the original chat close by while giving you a map you can scan, edit, color, expand, and export.
 
 ## What It Is For
